@@ -230,8 +230,9 @@ void Population::Fitness()
 			for( int i = 0; i < 30; i++ )
 			{
 				z = z + (( individual[j]->vector[i] * individual[j]->vector[i] ) / 4000 );
-				y = y * ( cos( individual[j]->vector[i] / sqrt((double)i) ) );
+				y = y * ( cos( individual[j]->vector[i] / sqrt((double)i+1) ) );
 			}
+			x = 1;
 			x = x + z - y;
 			individual[j]->fitness = x;
 		}
@@ -344,7 +345,7 @@ void Population::Single_Fitness(Individual* ind)
 			for( int i = 0; i < 30; i++ )
 			{
 				z = z + (( individual[j]->vector[i] * individual[j]->vector[i] ) / 4000 );
-				y = y * ( cos( individual[j]->vector[i] / sqrt((double)i) ) );
+				y = y * ( cos( individual[j]->vector[i] / sqrt((double)i+1) ) );
 			}
 			x = x + z - y;
 			individual[j]->fitness = x;
@@ -469,7 +470,7 @@ void Population::Roulette_Selection()
 void Population::Mutate( Individual* ind[] )
 {
 
-	for( int i = 0; i < 1000; i++ )
+	for( int i = 0; i < POP_SIZE; i++ )
 	{
 
 		for( int j = 0; j < 30; j++ )
@@ -512,7 +513,7 @@ void Population::Mutate( Individual* ind[] )
 void Population::Crossover(Individual* ind[])
 {
 	double temp;
-	for( int j = 0; j < 1000; j+=2 )
+	for( int j = 0; j < POP_SIZE; j+=2 )
 	{
 		for(int i = 0; i < 15; i++ )
 		{
