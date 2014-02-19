@@ -36,6 +36,7 @@ void quicksort( Individual* input[], int left, int right )
 
 Population::Population(char fit)
 {
+	ratio = 1.0;
 	func = fit;
 	// set range
 	// Sphere || Rastrigin
@@ -368,7 +369,7 @@ void Population::Tournament_Selection()
 	{
 		if( repeat == 20 || count == 1000 )
 		{
-			Print_Fitness();
+			//Print_Fitness();
 			break;
 		}
 		//tournament selection
@@ -406,6 +407,9 @@ void Population::Tournament_Selection()
 			IND[k] = ind;
 			k++;
 		}
+
+		// crossover
+		Crossover(IND);
 	
 		// mutate
 		Mutate(IND);
@@ -421,8 +425,6 @@ void Population::Tournament_Selection()
 			//delete IND[i]->vector;
 			delete IND[i];
 		}
-
-		Crossover();
 	
 		Fitness();
 
@@ -443,7 +445,16 @@ void Population::Tournament_Selection()
 		else
 			repeat = 0;
 		
-		//cout << low << " ";
+		//cout << individual[index]->fitness << endl;
+
+		if( low < 1000 )
+		{
+			ratio = 0.01;
+		}
+		else if( low < 3000 )
+		{
+			ratio = 0.1;
+		}
 
 		count++;
 	}
@@ -470,21 +481,21 @@ void Population::Mutate( Individual* ind[] )
 
 			if( r > 0.50 )
 			{
-				ind[i]->vector[j] -= 0.01;
+				ind[i]->vector[j] -= ratio;
 
 				Single_Fitness(ind[i]);
 
 				if( abs(ind[i]->fitness) > z )
-					ind[i]->vector[j] += 0.01;
+					ind[i]->vector[j] += ratio;
 			}
 			else
 			{
-				ind[i]->vector[j] += 0.01;
+				ind[i]->vector[j] += ratio;
 
 				Single_Fitness(ind[i]);
 
 				if( abs(ind[i]->fitness) > z )
-					ind[i]->vector[j] -= 0.01;
+					ind[i]->vector[j] -= ratio;
 			}
 
 			if( ind[i]->vector[j] > max_range )
@@ -492,20 +503,22 @@ void Population::Mutate( Individual* ind[] )
 			if( ind[i]->vector[j] < min_range )
 				ind[i]->vector[j] = min_range;
 
+			Single_Fitness(ind[i]);
+
 		}
 	}
 }
 
-void Population::Crossover()
+void Population::Crossover(Individual* ind[])
 {
 	double temp;
 	for( int j = 0; j < 1000; j+=2 )
 	{
 		for(int i = 0; i < 15; i++ )
 		{
-			temp = individual[j]->vector[i];
-			individual[j]->vector[i] = individual[j+1]->vector[i+14];
-			individual[j+1]->vector[i+14] = temp;
+			temp = ind[j]->vector[i];
+			ind[j]->vector[i] = ind[j+1]->vector[i+14];
+			ind[j+1]->vector[i+14] = temp;
 		}
 	}
 }

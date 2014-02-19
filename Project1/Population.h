@@ -17,6 +17,8 @@ public:
 
 	char func;
 
+	double ratio;
+
 	int index;
 
 	Individual* individual[POP_SIZE];
@@ -33,6 +35,6 @@ public:
 	void Roulette_Selection();
 
 	void Mutate(Individual* ind[]);
-	void Crossover();
+	void Crossover(Individual* ind[]);
 };
 

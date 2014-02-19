@@ -13,12 +13,11 @@ int _tmain(int argc, _TCHAR* argv[])
 		// options
 		// s = sphere 1
 		// c = schwefel 0
-		// r = rosenbrock 0
+		// r = rosenbrock 1
 		// i = rastrigin 0
 		// a = ackley 0
 		// g = griewangk 0
 		Population p1('c');
-		//p1.Print_Fitness();
 		
 		if( input != 'p' && input != 'i' )
 		{
