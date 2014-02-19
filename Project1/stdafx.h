@@ -5,6 +5,8 @@
 
 #pragma once
 
+#define POP_SIZE 1000
+
 #include "targetver.h"
 
 #include <stdio.h>

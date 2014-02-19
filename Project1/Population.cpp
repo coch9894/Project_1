@@ -39,7 +39,7 @@ Population::Population(char fit)
 	func = fit;
 	// set range
 	// Sphere || Rastrigin
-	if( func == 's' || func == 'g' )
+	if( func == 's' || func == 'i' )
 	{
 		min_range = -5.12;
 		max_range = 5.12;
@@ -56,9 +56,21 @@ Population::Population(char fit)
 		min_range = -512.03;
 		max_range = 511.97;
 	}
+	//Ackely
+	if( func == 'a' )
+	{
+		min_range = -30;
+		max_range = 30;
+	}
+	//Griewangk
+	if( func == 'g' )
+	{
+		min_range = -600;
+		max_range = 600;
+	}
 	// generate 1000 random individuals
 	srand(time(NULL));
-	for( int i = 0; i < 1000; i++ )
+	for( int i = 0; i < POP_SIZE; i++ )
 	{
 		individual[i] = new Individual;
 		individual[i]->vector = new double[30];
@@ -92,7 +104,7 @@ void Population::Print_Ind_Vector( Individual* ind )
 void Population::Print_Vector()
 {
 	//print all of the individuals
-	for(int i = 0; i < 1000; i++ )
+	for(int i = 0; i < POP_SIZE; i++ )
 	{
 		cout << "Individual " << i+1 << endl;
 		for( int j = 0; j < 30; j++ )
@@ -107,7 +119,7 @@ void Population::Print_Fitness()
 {
 	//print the fitnesses
 	Fitness();
-	for( int i = 0; i < 1000; i++ )
+	for( int i = 0; i < POP_SIZE; i++ )
 	{
 		cout << "Individual " << i+1 << " Fitness: " << individual[i]->fitness << endl;
 	}
@@ -120,11 +132,11 @@ void Population::Fitness()
 
 	char fit = func;
 	
-	// sphere
+	// Sphere
 	if( fit == 's' )
 	{
 		double y = 0;
-		for( int j = 0; j < 1000; j++ )
+		for( int j = 0; j < POP_SIZE; j++ )
 		{
 			y = 0;
 			for(int i = 0; i < 30; i++)
@@ -136,10 +148,10 @@ void Population::Fitness()
 	}
 
 	// Rosenbrock
-	if( fit == 'r' )
+	else if( fit == 'r' )
 	{
 		double y = 0;
-		for( int j = 0; j < 1000; j++ )
+		for( int j = 0; j < POP_SIZE; j++ )
 		{
 			y = 0;
 			for( int i = 0; i < 29; i++ )
@@ -151,10 +163,10 @@ void Population::Fitness()
 	}
 
 	// Rastrigin
-	if( fit == 'g' )
+	else if( fit == 'i' )
 	{
 		double y = 0;
-		for( int j = 0; j < 1000; j++ )
+		for( int j = 0; j < POP_SIZE; j++ )
 		{
 			y = 300;
 			for( int i = 0; i < 29; i++ )
@@ -166,17 +178,61 @@ void Population::Fitness()
 	}
 
 	// Schwefel
-	if( fit == 'c' )
+	else if( fit == 'c' )
 	{
 		double y = 0;
-		for( int j = 0; j < 1000; j++ )
+		for( int j = 0; j < POP_SIZE; j++ )
 		{
 			y = 418.9829 * 30;
 			for( int i = 0; i < 30; i++ )
 			{
-				y = y + ( individual[j]->vector[i] * sin( sqrt( individual[j]->vector[i] ) ) );
+				y = y + ( individual[j]->vector[i] * sin( sqrt( abs(individual[j]->vector[i]) ) ) );
 			}
 			individual[j]->fitness = y;
+		}
+	}
+
+	// Ackley
+	else if( fit == 'a' )
+	{
+		double x = 0;
+		double y = 0;
+		double z = 0;
+		for( int j = 0; j < POP_SIZE; j++ )
+		{
+			x = 20 + exp(1.0);
+			y = 0;
+			z = 0;
+			for( int i = 0; i < 30; i++ )
+			{
+				z = z + ( individual[j]->vector[i] * individual[j]->vector[i] );
+				y = y + ( cos( 2* PI * individual[j]->vector[i] ) );
+			}
+			z = -0.2*sqrt((1/30) * z);
+			y = exp( (1/30) * y );
+			x = x - 20*exp( z - y );
+			individual[j]->fitness = x;
+		}
+	}
+
+	// Griewangk
+	else if( fit == 'g' )
+	{
+		double x = 0;
+		double y = 0;
+		double z = 0;
+		for( int j = 0; j < POP_SIZE; j++ )
+		{
+			x = 1;
+			y = 0;
+			z = 0;
+			for( int i = 0; i < 30; i++ )
+			{
+				z = z + (( individual[j]->vector[i] * individual[j]->vector[i] ) / 4000 );
+				y = y * ( cos( individual[j]->vector[i] / sqrt((double)i) ) );
+			}
+			x = x + z - y;
+			individual[j]->fitness = x;
 		}
 	}
 
@@ -206,7 +262,7 @@ void Population::Single_Fitness(Individual* ind)
 	}
 
 	// Rosenbrock
-	if( fit == 'r' )
+	else if( fit == 'r' )
 	{
 		double y = 0;
 		for( int j = 0; j < 1; j++ )
@@ -221,7 +277,7 @@ void Population::Single_Fitness(Individual* ind)
 	}
 
 	// Rastrigin
-	if( fit == 'g' )
+	else if( fit == 'i' )
 	{
 		double y = 0;
 		for( int j = 0; j < 1; j++ )
@@ -236,7 +292,7 @@ void Population::Single_Fitness(Individual* ind)
 	}
 
 	// Schwefel
-	if( fit == 'c' )
+	else if( fit == 'c' )
 	{
 		double y = 0;
 		for( int j = 0; j < 1; j++ )
@@ -244,9 +300,53 @@ void Population::Single_Fitness(Individual* ind)
 			y = 418.9829 * 30;
 			for( int i = 0; i < 29; i++ )
 			{
-				y = y + ( ind->vector[i] * sin( sqrt( ind->vector[i] ) ) );
+				y = y + ( ind->vector[i] * sin( sqrt( abs(ind->vector[i]) ) ) );
 			}
 			ind->fitness = y;
+		}
+	}
+
+	// Ackley
+	else if( fit == 'a' )
+	{
+		double x = 0;
+		double y = 0;
+		double z = 0;
+		for( int j = 0; j < 1; j++ )
+		{
+			x = 20 + exp(1.0);
+			y = 0;
+			z = 0;
+			for( int i = 0; i < 30; i++ )
+			{
+				z = z + ( ind->vector[i] * ind->vector[i] );
+				y = y + ( cos( 2* PI * ind->vector[i] ) );
+			}
+			z = -0.2*sqrt((1/30) * z);
+			y = exp( (1/30) * y );
+			x = x - 20*exp( z - y );
+			ind->fitness = x;
+		}
+	}
+
+	// Griewangk
+	else if( fit == 'g' )
+	{
+		double x = 0;
+		double y = 0;
+		double z = 0;
+		for( int j = 0; j < 1; j++ )
+		{
+			x = 1;
+			y = 0;
+			z = 0;
+			for( int i = 0; i < 30; i++ )
+			{
+				z = z + (( individual[j]->vector[i] * individual[j]->vector[i] ) / 4000 );
+				y = y * ( cos( individual[j]->vector[i] / sqrt((double)i) ) );
+			}
+			x = x + z - y;
+			individual[j]->fitness = x;
 		}
 	}
 }
@@ -254,7 +354,7 @@ void Population::Single_Fitness(Individual* ind)
 void Population::Sort()
 {
 	//sort the individuals
-	quicksort(individual, 0, 999);
+	quicksort(individual, 0, POP_SIZE - 1);
 }
 
 void Population::Tournament_Selection()
@@ -266,9 +366,8 @@ void Population::Tournament_Selection()
 	int repeat = 0;
 	while( low > 0.01 || low < -0.01 )
 	{
-		if( repeat == 1000000 || count == 1000 )
+		if( repeat == 20 || count == 1000 )
 		{
-			//do nothing
 			Print_Fitness();
 			break;
 		}
@@ -276,9 +375,9 @@ void Population::Tournament_Selection()
 		int k = 0;
 		int p = 0;
 		int N = 5;
-		Individual* IND[1000];
+		Individual* IND[POP_SIZE];
 	
-		while( k < 1000 )
+		while( k < POP_SIZE )
 		{
 			Individual* ind = new Individual;
 			ind->vector = new double[30];
@@ -291,7 +390,7 @@ void Population::Tournament_Selection()
 			for( int i = 0; i < N; i++ )
 			{
 				int random = ((int)rand()) / (int)RAND_MAX;
-				int diff = 999 - 0;
+				int diff = POP_SIZE-1 - 0;
 				int r = random * diff;
 				int index = 0 + r;
 	
@@ -311,7 +410,7 @@ void Population::Tournament_Selection()
 		// mutate
 		Mutate(IND);
 	
-		for( int i = 0; i < 1000; i++ )
+		for( int i = 0; i < POP_SIZE; i++ )
 		{
 			individual[i]->fitness = IND[i]->fitness;
 			
@@ -329,7 +428,7 @@ void Population::Tournament_Selection()
 
 		double saved = low;
 	
-		while( p != 1000 )
+		while( p != POP_SIZE )
 		{
 			if( abs(individual[p]->fitness) < abs(low) )
 			{
@@ -377,11 +476,6 @@ void Population::Mutate( Individual* ind[] )
 
 				if( abs(ind[i]->fitness) > z )
 					ind[i]->vector[j] += 0.01;
-
-				if( ind[i]->vector[j] > max_range )
-					ind[i]->vector[j] = max_range;
-				if( ind[i]->vector[j] < min_range )
-					ind[i]->vector[j] = min_range;
 			}
 			else
 			{
@@ -391,12 +485,12 @@ void Population::Mutate( Individual* ind[] )
 
 				if( abs(ind[i]->fitness) > z )
 					ind[i]->vector[j] -= 0.01;
-
-				if( ind[i]->vector[j] > max_range )
-					ind[i]->vector[j] = max_range;
-				if( ind[i]->vector[j] < min_range )
-					ind[i]->vector[j] = min_range;
 			}
+
+			if( ind[i]->vector[j] > max_range )
+				ind[i]->vector[j] = max_range;
+			if( ind[i]->vector[j] < min_range )
+				ind[i]->vector[j] = min_range;
 
 		}
 	}

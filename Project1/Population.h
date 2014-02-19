@@ -19,7 +19,7 @@ public:
 
 	int index;
 
-	Individual* individual[1000];
+	Individual* individual[POP_SIZE];
 
 	void Print_Ind_Vector(Individual* ind);
 	void Print_Vector();
