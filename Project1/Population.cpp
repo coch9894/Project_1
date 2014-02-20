@@ -36,7 +36,6 @@ void quicksort( Individual* input[], int left, int right )
 
 Population::Population(char fit)
 {
-	ratio = 1.0;
 	func = fit;
 	// set range
 	// Sphere || Rastrigin
@@ -69,6 +68,7 @@ Population::Population(char fit)
 		min_range = -600;
 		max_range = 600;
 	}
+	ratio = 0.01;
 	// generate 1000 random individuals
 	srand(time(NULL));
 	for( int i = 0; i < POP_SIZE; i++ )
@@ -77,12 +77,13 @@ Population::Population(char fit)
 		individual[i]->vector = new double[30];
 		for( int j = 0; j < 30; j++ )
 		{
+			
 			double random = ((double)rand()) / (double)RAND_MAX;
-			double diff = max_range - min_range;
-			double r = random * diff;
-			individual[i]->vector[j] = min_range + r;
+			double x = random * (max_range - min_range);
+			individual[i]->vector[j] = min_range + x;
+			//cout << individual[i]->vector[j] << endl;
+			//individual[i]->vector[j] = -420;
 		}
-		//individual[i]->vector should now = foo;
 	}
 	Fitness();
 }
@@ -344,11 +345,11 @@ void Population::Single_Fitness(Individual* ind)
 			z = 0;
 			for( int i = 0; i < 30; i++ )
 			{
-				z = z + (( individual[j]->vector[i] * individual[j]->vector[i] ) / 4000 );
-				y = y * ( cos( individual[j]->vector[i] / sqrt((double)i+1) ) );
+				z = z + (( ind->vector[i] * ind->vector[i] ) / 4000 );
+				y = y * ( cos( ind->vector[i] / sqrt((double)i+1) ) );
 			}
 			x = x + z - y;
-			individual[j]->fitness = x;
+			ind->fitness = x;
 		}
 	}
 }
@@ -368,7 +369,7 @@ void Population::Tournament_Selection()
 	int repeat = 0;
 	while( low > 0.01 || low < -0.01 )
 	{
-		if( repeat == 20 || count == 1000 )
+		if( repeat == 2000 || count == 1000 )
 		{
 			//Print_Fitness();
 			break;
@@ -378,7 +379,10 @@ void Population::Tournament_Selection()
 		int p = 0;
 		int N = 5;
 		Individual* IND[POP_SIZE];
-	
+
+		//IND[0] = individual[0];
+		//IND[1] = individual[0];
+
 		while( k < POP_SIZE )
 		{
 			Individual* ind = new Individual;
@@ -392,7 +396,7 @@ void Population::Tournament_Selection()
 			for( int i = 0; i < N; i++ )
 			{
 				int random = ((int)rand()) / (int)RAND_MAX;
-				int diff = POP_SIZE-1 - 0;
+				int diff = POP_SIZE - 1 - 0;
 				int r = random * diff;
 				int index = 0 + r;
 	
@@ -413,8 +417,11 @@ void Population::Tournament_Selection()
 		Crossover(IND);
 	
 		// mutate
+		//Print_Ind_Vector(IND[0]);
 		Mutate(IND);
-	
+		//Print_Ind_Vector(IND[0]);
+
+
 		for( int i = 0; i < POP_SIZE; i++ )
 		{
 			individual[i]->fitness = IND[i]->fitness;
@@ -424,7 +431,10 @@ void Population::Tournament_Selection()
 				individual[i]->vector[j] = IND[i]->vector[j];
 			}
 			//delete IND[i]->vector;
+			IND[i] = NULL;
 			delete IND[i];
+			IND[i] = NULL;
+
 		}
 	
 		Fitness();
@@ -441,21 +451,14 @@ void Population::Tournament_Selection()
 			p++;
 		}
 
+		//Print_Ind_Vector(individual[index]);
+
 		if( low == saved )
 			repeat++;
 		else
 			repeat = 0;
 		
 		//cout << individual[index]->fitness << endl;
-
-		if( low < 1000 )
-		{
-			ratio = 0.01;
-		}
-		else if( low < 3000 )
-		{
-			ratio = 0.1;
-		}
 
 		count++;
 	}
@@ -478,25 +481,25 @@ void Population::Mutate( Individual* ind[] )
 			double random = ((double)rand()) / (double)RAND_MAX;
 			double diff = 1.0 - 0.0;
 			double r = random * diff;
-			double z  = abs(ind[i]->fitness);
+			//double z  = abs(ind[i]->fitness);
 
-			if( r > 0.50 )
+			if( r > 0.50 && r < 0.75 )
 			{
 				ind[i]->vector[j] -= ratio;
 
-				Single_Fitness(ind[i]);
+				//Single_Fitness(ind[i]);
 
-				if( abs(ind[i]->fitness) > z )
-					ind[i]->vector[j] += ratio;
+				//if( abs(ind[i]->fitness) > z )
+					//ind[i]->vector[j] += ratio;
 			}
-			else
+			else if( r < 0.50 && r > 0.25 )
 			{
 				ind[i]->vector[j] += ratio;
 
-				Single_Fitness(ind[i]);
+				//Single_Fitness(ind[i]);
 
-				if( abs(ind[i]->fitness) > z )
-					ind[i]->vector[j] -= ratio;
+				//if( abs(ind[i]->fitness) > z )
+					//ind[i]->vector[j] -= ratio;
 			}
 
 			if( ind[i]->vector[j] > max_range )
@@ -512,14 +515,20 @@ void Population::Mutate( Individual* ind[] )
 
 void Population::Crossover(Individual* ind[])
 {
-	double temp;
 	for( int j = 0; j < POP_SIZE; j+=2 )
 	{
-		for(int i = 0; i < 15; i++ )
+		for( int i = 0; i < 30; i++ )
 		{
-			temp = ind[j]->vector[i];
-			ind[j]->vector[i] = ind[j+1]->vector[i+14];
-			ind[j+1]->vector[i+14] = temp;
+			double random = ((double)rand()) / (double)RAND_MAX;
+			double diff = 1.0 - 0.0;
+			double r = random * diff;
+
+			if( r > 0.50 )
+			{
+				double temp = ind[j]->vector[i];
+				ind[j]->vector[i] = ind[j+1]->vector[i];
+				ind[j+1]->vector[i] = temp;
+			}
 		}
 	}
 }
