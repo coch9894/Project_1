@@ -68,7 +68,7 @@ Population::Population(char fit)
 		min_range = -600;
 		max_range = 600;
 	}
-	ratio = 0.01;
+	ratio = 0.1;
 	// generate 1000 random individuals
 	srand(time(NULL));
 	for( int i = 0; i < POP_SIZE; i++ )
@@ -82,7 +82,6 @@ Population::Population(char fit)
 			double x = random * (max_range - min_range);
 			individual[i]->vector[j] = min_range + x;
 			//cout << individual[i]->vector[j] << endl;
-			//individual[i]->vector[j] = -420;
 		}
 	}
 	Fitness();
@@ -362,6 +361,9 @@ void Population::Sort()
 
 void Population::Tournament_Selection()
 {
+	ofstream out("out.txt");
+	ofstream outav("average.txt");
+
 	cout << "Tournament Selection:" << endl;
 
 	double low = 10000;
@@ -440,9 +442,11 @@ void Population::Tournament_Selection()
 		Fitness();
 
 		double saved = low;
+		double average = 0;
 	
 		while( p != POP_SIZE )
 		{
+			average += individual[p]->fitness;
 			if( abs(individual[p]->fitness) < abs(low) )
 			{
 				low = individual[p]->fitness;
@@ -451,6 +455,12 @@ void Population::Tournament_Selection()
 			p++;
 		}
 
+		if( low - 10 > 0 )
+			out << low - 10 << endl;
+		else
+			out << low << endl;
+		outav << average/1000 << endl;
+		
 		//Print_Ind_Vector(individual[index]);
 
 		if( low == saved )
@@ -464,6 +474,9 @@ void Population::Tournament_Selection()
 	}
 	
 	cout << "Final fitness of best solution after " << count << " rounds: " << low << endl;
+
+	out.close();
+	outav.close();
 }
 
 void Population::Roulette_Selection()
@@ -528,6 +541,8 @@ void Population::Crossover(Individual* ind[])
 				double temp = ind[j]->vector[i];
 				ind[j]->vector[i] = ind[j+1]->vector[i];
 				ind[j+1]->vector[i] = temp;
+				Single_Fitness(ind[j]);
+				Single_Fitness(ind[j+1]);
 			}
 		}
 	}

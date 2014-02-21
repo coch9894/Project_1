@@ -17,9 +17,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		// i = rastrigin 
 		// a = ackley 
 		// g = griewangk 
-		Population p1('s');
+		Population p1('g');
 
-		p1.Print_Fitness();
+		//p1.Print_Fitness();
 		
 		if( input != 'p' && input != 'i' )
 		{

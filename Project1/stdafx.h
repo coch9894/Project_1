@@ -5,13 +5,15 @@
 
 #pragma once
 
-#define POP_SIZE 100
+#define POP_SIZE 1000
 
 #include "targetver.h"
 
 #include <stdio.h>
 #include <tchar.h>
 #include <iostream>
+#include <fstream>
+#include <string>
 
 #include "Population.h"
 

@@ -75,46 +75,84 @@
 \section{Abstract}
 
 %------------------------------------------------
-\paragraph{} The problem for this assignment was to create a Genetic Algorithm for the spherical function used in the first assignment. To create a population for this problem, I decided to model my population with a class. The class then held on to an array of 1000 Individuals, my population, who had their fitness and vector stored with them. The Class Diagram for my population model is as follows.
-
-\includegraphics[scale = 0.70]{Class_Diagram}
+\paragraph{} The problem for this project was to create a Genetic Algorithm(GA) for a set of benchmark optimization problems. My GA works as it is expected to but my populations rarely start with a good enough individual to ever get to a global minimum using hill-climbing. Introducing crossover had little affect at increasing the effectiveness of the GA. The results of the runs through the GA however show that conformation to the best solution is done in each case. In other words, the population might not move towards a global minimum but it does move towards the best individual and their local minimum.
 %------------------------------------------------
 
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
 \section{Algorithm Description}
 
 %------------------------------------------------
-\paragraph{} For this assignment I focused solely on Tournament Selection even though I added a method for Roulette Selection under my Population class. The pseudo code for Tournament Selection is as follows:
+\paragraph{} The algorithms used to create the GA revolve around tournament selection for a generational type. Below is some pseudo code for what will be explained next. To begin the GA that I built uses generational tournament selection. The pseudo code demonstrates that generations were built that then were used to replace the current population after crossover/mutation/etc. The fitness was measured during and after each generation was selected. The speed decrease was worth the assurance that the fitness values were always correct. After a new generation was created, crossover and mutation were preformed and the new generation replaced the population currently being stored.
+
+\paragraph{} For crossover, there was a 50\% chance that I would swap a value in the vector of two side by side individuals in the new generation. Because elitism was not used and the new generation was not sorted yet, good and bad values could be swapped and better or worse solutions are almost guaranteed unless the same vector is being swapped.
+
+\paragraph{} For mutation, there was a 25\% chance that I would subtract 0.01 from the value in the vector and a 25\% chance that I would add 0.01 to the value in the vector. There were also no restrictions on only accepting better solutions. If it wanted to accept worse values for the vectors it was more than capable of doing so.
+
+\paragraph{} The fitness of each function is calculated on the benchmark functions provided for each one. It can be done solely for each individual for testing purposes if updated vector values have changed fitness and the value is needed now. The more common calculations for fitness were done for the whole population at once. After which, the population was then sorted by their fitness from minimum to maximum. This made print outs nicer and allowed me to "seed" my tournament selection to some degree, using some simple math to get values closer to 0 then 100.
+
+\paragraph{} Some other information that is useful in recreating this GA is that populations consisted of 1000 individuals. They were filled with random values for their vectors. Runs consisted of 1000 generations or enough generations to get within a thousandth of 0.
+
+\paragraph{Pseudo Code}
 \begin{verbatim}
 while ( Individual[]->fitness > 0.01 ) //larger then the smallest value measured
-    if( repeated fitness 100 times)
+    if( repeated fitness 100 times || 1000 generations have been created)
         break
-    while( nect Population is not filed )
+    while( next Population is not filled )
         create a new individual to put in the population
         randomly select an individual from the current population N = 5 times
         select the one with the best fitness and make the new individual it
-        mutate by + or minus 0.01 on the ENTIRE vector
-        calculate the new fitness / sort
+    crossover
+    mutate
+    calculate the new fitness / sort
 \end{verbatim}
 
-\paragraph{} Something I did that could possibly be of use later is sorting my population so that the first element in my individual array is always the best fitness. I then used some mathematical maneuvering to get my random selection function to pick from lower numbers more often. This gave my selection some sort of a ranking and seeding aspect which I believe got better solutions with every selection.
-
-\paragraph{}When the process is over it prints the best solutions fitness which should be below 0.01 unless it got stuck with a bad population that could not get to zero. It also prints how many times it iterated just to get a feel of how changes made the process more efficient or not.
+\paragraph{}When the process is over it prints the best solutions fitness which should be below 0.01 unless it got stuck with a bad population that could not get to zero. It also prints how many times it iterated just to get a feel of how changes made the process more efficient or not. For most well situated solutions \~0 is found much sooner then the max 1000 generations.
 %------------------------------------------------
 
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
 \section{Results}
 
 %------------------------------------------------
-\paragraph{} The average amount of time spent generating populations was around 450 iterations per run of Tournament Selection. Fitnesses of the best individual in each population is always below the specified amount, meaning it is always finding the minimum. With the sphere being such a simple case however, this is to be expected. Nonetheless it shows how well the Genetic Algorithm can work at finding the best solution because of its use of the best individuals each round. This is especially true with the sorting and seeding that I do which seems to decrease the number of generations by about 20 to 50 for this problem. The following two pictures show some values coming from a sample run and the graph of the values.
-\newline
+
+\includegraphics{Sphere}
+Sphere Graph
+
+\paragraph{} The following set of graphs will feature two lines, one showing best individual fitness and then an average individual fitness over the total duration of the run. The first graph is of the sphere function. The red line here represents the average fitness for the population. The blue line is representing that of the best individual. In this instance, a very good solution was in the initial population but during tournament selection, it was not chosen with great bias and therefore the population was slow to converse on it.
+
+\includegraphics{Schwefel}
+Schwefel Graph 
+
+\paragraph{} This graph is for the Schwefel function. The red line represents the average, the blue line would represent the best case but because this graph is standardized the line is really hard to see. The graph itself has the correct slope that you would expect with a steep initial reading and then steadying off into a gradual decent. The initial slope however is small and as this graph shows very well, the population becomes more and more centralized to the best individual as it hill climbs down into a valley.
+
+\includegraphics{Rosenbrock}
+Rosenbrock Graph
+
+\paragraph{} With the Rosenbrock graph, the blue line shows the best individual while the red line shows the average. Rosenbrock has the fitness function that produces negative values. This was handled in code by taking the absolute value but I thought the real graph would look unique. For this graph a lot of movement can be seen by the slope of the lines. While it is not clear in the graph, the values themselves make a drastic junk from bad values to conform quickly to the best individual.
+
+\includegraphics{Rastrigin}
+Rastrigin Graph
+
+\paragraph{} Finally with the Rastrigin graph the drastic curve can be seen. The blue line representing the best individual moves quickly into a hole that it cannot leave while at almost the same speed the entire population, represented by the red line, moves towards a stagnant state as well.
+
+\includegraphics{Ackley}
+Ackley Graph
+
+\paragraph{} The Ackley graph is interesting in the since that the individuals fitness values are not changing. This is because drastic changes in vector values are needed to get to the function to produce different values for fitness. Therefore the fitness gets stuck in the hole that it falls into at the start. The exponential nature of the fitness function creates this uniqueness.
+
+\includegraphics{Griewangk}
+Griewangk Graph
+
+\paragraph{} For this graph it is easy to see that the fitness is slowly moving towards the minimum. The average fitness stays at an almost constant distance away from the best fitness. The population has varying fitnesses but the average seems to stay very linear. With more time or a larger interval the same hole is found.
+
 %------------------------------------------------
 
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
 \section{Conclusion}
 
 %------------------------------------------------
-\paragraph{} With the behaviour of the Genetic Algorithm working well at selecting and mutating the populations, it is hard to find something wrong with the way everything is working. This is also in part because it is being used to solve the trivial sphere function. I would say the only way to improve the GA at this time would to alter the mutation method or add crossover. Testing on the sorting of the populations could also be done.
+\paragraph{} The Genetic Algorithm seems to be working well in the since that it is taking good individuals and mutating them along with crossover to get a better next generation. The problem with this solution however is that a great individual is not present in the population at the start. Without this individual that is almost at the minimum at the start, it is very unlikely to actually find the global minimum.
+
+\paragraph{} 
 %------------------------------------------------
 
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
