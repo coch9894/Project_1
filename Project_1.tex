@@ -75,7 +75,7 @@
 \section{Abstract}
 
 %------------------------------------------------
-\paragraph{} The problem for this project was to create a Genetic Algorithm(GA) for a set of benchmark optimization problems. My GA works as it is expected to but my populations rarely start with a good enough individual to ever get to a global minimum using hill-climbing. Introducing crossover had little affect at increasing the effectiveness of the GA. The results of the runs through the GA however show that conformation to the best solution is done in each case. In other words, the population might not move towards a global minimum but it does move towards the best individual and their local minimum.
+\paragraph{} The problem for this project was to create a Genetic Algorithm(GA) for a set of benchmark optimization problems. My GA works as it is expected to but my populations rarely start with a good enough individual to ever get to a global minimum using hill-climbing. Introducing crossover had little affect at increasing the effectiveness of the GA. The results of the runs through the GA however show that conformation to the best solution is done in each case. In other words, the population might not move towards a global minimum but it does move towards the best individual and their local minimum.While the global minimum may not have always been found. The last generation is always conformed to the local minimum that the best solution has gotten stuck in.
 %------------------------------------------------
 
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
@@ -144,6 +144,8 @@ Griewangk Graph
 
 \paragraph{} For this graph it is easy to see that the fitness is slowly moving towards the minimum. The average fitness stays at an almost constant distance away from the best fitness. The population has varying fitnesses but the average seems to stay very linear. With more time or a larger interval the same hole is found.
 
+\paragraph{} Some things to note are that the Ackley graph and the Griewangk graph are labelled in a misleading way. The labels for fitness should be in thousandths but for some reason the leading zeros and decimal were neglected when presenting in \LaTeX. Hopefully this will not hinder the usage of the graphs as it occurred to me too late for a quick fix. The desired look would be that similar to Rosenbrock or Schwefel.
+
 %------------------------------------------------
 
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
@@ -154,7 +156,9 @@ Griewangk Graph
 
 \paragraph{} Some improvements that could have been done were to add an individual to the population that was not random but was in fact very close to the actual minimums vector/fitness. This would guarantee that I had an individual that would be able to move to the minimum. This does take away from the whole purpose of the GA but as stated before, it guarantees a solution is found.
 
-\paragraph{} While it would be interesting to get these problems to all work correctly, the run time for them with 1000 individuals in the population takes quite some time. Each fix could take up to 5 minutes to run that fix to see if an improvement was made. Therefore I would like to rewrite the way I do sorting a bit but as just an exercise I have learned quite a bit about GA's and how they operate.
+\paragraph{} While it would be interesting to get these problems to all work correctly, the run time for them with 1000 individuals in the population takes quite some time. Each fix could take up to 5 minutes to run that fix to see if an improvement was made. Therefore I would like to rewrite the way I do sorting a bit but as just an exercise I have learned quite a bit about GA's and how they operate. The most interesting bit was the affect or the mutation ratio as well as the likely hood for crossover to occur. Changing these values had the greatest affect on the shape as the graph as well. The lower the mutation value was the more linear the graph looked which is why most of these graphs are linear. The values took a steep initial two or three steps and then hill climbed as a group to a minima.
+
+\paragraph{} Crossover had this same affect. The more likely two individuals were to crossover, the slower it took to hill climb. This is because good individuals are not always taken. Especially without elitism in the GA, it was difficult to assume that the best individual always stayed. Nonetheless it worked out to were the algorithms were working well together to at least find minima and with more tweaking of values and intervals it is plausible to think that the global minimum would eventually be found.
 %------------------------------------------------
 
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
