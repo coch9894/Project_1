@@ -132,7 +132,7 @@ Rosenbrock Graph
 \includegraphics{Rastrigin}
 Rastrigin Graph
 
-\paragraph{} Finally with the Rastrigin graph the drastic curve can be seen. The blue line representing the best individual moves quickly into a hole that it cannot leave while at almost the same speed the entire population, represented by the red line, moves towards a stagnant state as well.
+\paragraph{} Finally with the Rastrigin graph the drastic curve can be seen. The blue line representing the best individual moves quickly into a hole that it cannot leave while at almost the same speed the entire population, represented by the red line, moves towards a stagnant state as well. This steep initial movement is present in all the graphs but it is masked by the linear nature of the graphs and their axes morphing.
 
 \includegraphics{Ackley}
 Ackley Graph
@@ -152,7 +152,9 @@ Griewangk Graph
 %------------------------------------------------
 \paragraph{} The Genetic Algorithm seems to be working well in the since that it is taking good individuals and mutating them along with crossover to get a better next generation. The problem with this solution however is that a great individual is not present in the population at the start. Without this individual that is almost at the minimum at the start, it is very unlikely to actually find the global minimum.
 
-\paragraph{} 
+\paragraph{} Some improvements that could have been done were to add an individual to the population that was not random but was in fact very close to the actual minimums vector/fitness. This would guarantee that I had an individual that would be able to move to the minimum. This does take away from the whole purpose of the GA but as stated before, it guarantees a solution is found.
+
+\paragraph{} While it would be interesting to get these problems to all work correctly, the run time for them with 1000 individuals in the population takes quite some time. Each fix could take up to 5 minutes to run that fix to see if an improvement was made. Therefore I would like to rewrite the way I do sorting a bit but as just an exercise I have learned quite a bit about GA's and how they operate.
 %------------------------------------------------
 
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
